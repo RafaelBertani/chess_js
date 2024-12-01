@@ -1,0 +1,59 @@
+*{
+    background-color: skyblue;
+    margin: 0%;
+    border: 0%;
+    padding: 0%;
+}
+#game{
+    position: absolute;
+    overflow: hidden;
+    left: 30%;
+    top: 10%;
+    background-color: #333333;
+}
+#border1,#border2,#border3,#border4{
+    position: absolute;
+    background-color: #333333;
+}
+#char{
+    position: absolute;
+    float: inline-start;
+    text-align: center;
+    font-size: large;
+    color: white;
+    background-color: #333333;
+}
+#char_rotated{
+    position: absolute;
+    float: inline-start;
+    text-align: center;
+    font-size: large;
+    color: white;
+    background-color: #333333;
+    -webkit-transform: rotateX(180deg);
+    transform: rotateX(180deg);
+}
+#main{
+    position: inherit;
+    background-color: yellow;
+}
+.teste{
+    float: left;
+    position: relative;
+}
+#chat{
+    position: absolute;
+    top: 10%;
+    left: 75%;
+    height: 83.5%;
+    width: 20%;
+    background-color: white;
+}
+.image{
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    background-color: transparent;
+}
