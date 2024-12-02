@@ -41,14 +41,27 @@
     float: left;
     position: relative;
 }
-#chat{
+#history{
     position: absolute;
     top: 10%;
     left: 75%;
-    height: 83.5%;
+    height: 3.5%;
+    width: 20%;
+    text-align: center;
+    font-size: 120%;
+    color: white;
+    background-color: black;
+    border: 1px solid black;
+}
+#chat{
+    position: absolute;
+    top: 13.5%;
+    left: 75%;
+    height: 80%;
     width: 20%;
     background-color: #bbbbbb;
     border: 1px solid black;
+    overflow-y:auto;
 }
 .image{
     position: absolute;
@@ -67,5 +80,16 @@
     background-color: white;
     color: #000;
     font-size: 400%;
+    text-align: center;
+}
+#reset_button{
+    position: absolute;
+    left: 5%;
+    width: 20%;
+    top: 40%;
+    height: 10%;
+    background-color: gray;
+    color: #000;
+    font-size: 100%;
     text-align: center;
 }
