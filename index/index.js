@@ -1,3 +1,24 @@
+let board = [
+    [ ["white_rook_1"],["white_knight_1"],["white_bishop_1"],["white_king"],["white_queen"],["white_bishop_2"],["white_knight_2"],["white_rook_2"] ],
+    [ ["white_pawn_1"],["white_pawn_2"],["white_pawn_3"],["white_pawn_4"],["white_pawn_5"],["white_pawn_6"],["white_pawn_7"],["white_pawn_8"] ],
+    [ [""],[""],[""],[""],[""],[""],[""],[""] ],
+    [ [""],[""],[""],[""],[""],[""],[""],[""] ],
+    [ [""],[""],[""],[""],[""],[""],[""],[""] ],
+    [ [""],[""],[""],[""],[""],[""],[""],[""] ],
+    [ ["black_pawn_1"],["black_pawn_2"],["black_pawn_3"],["black_pawn_4"],["black_pawn_5"],["black_pawn_6"],["black_pawn_7"],["black_pawn_8"] ],
+    [ ["black_rook_1"],["black_knight_1"],["black_bishop_1"],["black_king"],["black_queen"],["black_bishop_2"],["black_knight_2"],["black_rook_2"] ]
+];
+
+function find_piece_location(piece_name){
+    for(let i=0;i<8;i++){
+        for(let j=0;j<8;j++){
+            if(piece_name==board[i][j]){
+                return [i,j];
+            }
+        }
+    }
+}
+
 let game = document.getElementById("game");
 let border1 = document.getElementById("border1");
 let border2 = document.getElementById("border2");
@@ -79,22 +100,79 @@ let content_size = 0.90*size;
 
 // let chat = document.getElementById("chat");
 
+let turn = document.getElementById("turn");
+let white_black = 0;
+
 function allowDrop(ev) {
     ev.preventDefault();
 }
   
 function drag(ev) {
-    ev.dataTransfer.setData("text", ev.target.id);
+    ev.dataTransfer.setData("text", ev.target.id); //piece name
 }
   
 function drop(ev) {
+
     ev.preventDefault();
     var data = ev.dataTransfer.getData("text");
     
-    //ev.target.id
+    //ev.target.id //id of the div that will receive the piece
+    let info = ev.dataTransfer.getData("text").split('_').concat(find_piece_location(ev.dataTransfer.getData("text")));
+    if(ev.target.id.length==2){ //if target is a blank space
+        info=info.concat([[...ev.target.id][0]-1,letters.indexOf( [...ev.target.id][1] )])
+    }
+    else{//if target is with a piece
+        info=info.concat(find_piece_location(ev.target.id));
+    }
+    //info: color,piece,start colunm, initial line, initial colunm, final line, final column
 
-    ev.target.appendChild(document.getElementById(data));
+    if( (white_black==0 && info[0]!="black") || (white_black==1 && info[0]!="white") ){ //only permit movements on your turn
+        if(is_move_valid(info)){ //infos and div that will receive the piece
+            //use info.length-x because info[2] (start colunm) may or not be present (in the case of king and queen)
+            board[ info[info.length-2] ][ info[info.length-1] ] = ev.dataTransfer.getData("text"); //new location receive the piece
+            board[ info[info.length-4] ][ info[info.length-3] ] = ""; //past location is now blank
+            if(document.getElementById(ev.target.id).parentNode!=main){ //if target is with a piece (using another way)!!!!
+                let parent=document.getElementById(ev.target.id).parentNode;
+                parent.removeChild(parent.children[0]);
+                parent.appendChild(document.getElementById(data));
+            }
+            else{ //if target is a blank space
+                ev.target.appendChild(document.getElementById(data));
+            }
+            if(white_black==0){white_black=1;turn.innerHTML="BLACK'S TURN";}
+            else{white_black=0;turn.innerHTML="WHITE'S TURN";}
+        }
+    }
     
+}
+
+function is_move_valid(info){
+    //info: color,piece,start colunm, initial line, initial colunm, final line, final column
+    //       [0]   [1]      [2]             [3]            [4]           [5]         [6]
+    if(info[1]=="rook"){return true;}
+    else if(info[1]=="knight"){return true;}
+    else if(info[1]=="bishop"){
+        
+        return true;
+    }
+    else if(info[1]=="king"){
+        //when is the king or the queen, there is no 'start colunm', leaving 'info' with 0-5:
+        //info: color,piece, initial line, initial colunm, final line, final column
+        //       [0]   [1]      [2]             [3]            [4]           [5]
+        
+        if(Math.abs(info[2]-info[4])<=1 && Math.abs(info[3]-info[5])<=1){    
+            if(board[info[4]][info[5]]=="" || info[0].charAt(0)!=board[info[4]][info[5]].toString().charAt(0) ){
+                return true;
+            }
+        }
+    }
+    else if(info[1]=="queen"){
+        //when is the king or the queen, there is no 'start colunm', leaving 'info' with 0-5:
+        //info: color,piece, initial line, initial colunm, final line, final column
+        //       [0]   [1]      [2]             [3]            [4]           [5]
+        return true;
+    }
+    else if(info[1]=="pawn"){return true;}
 }
 
 let temp;
@@ -117,7 +195,7 @@ for(let i=7;i>=0;i--){
     }
 }
 
-
+//#region 
 let white_rook_1 = document.getElementById("1A");
 let image_white_rook_1 = document.createElement("img");
 image_white_rook_1.setAttribute("class","image");
@@ -406,3 +484,5 @@ image_black_pawn_8.setAttribute("src","../pieces/black-pawn.png");
 image_black_pawn_8.setAttribute("draggable","true");
 image_black_pawn_8.setAttribute("ondragstart","drag(event)");
 black_pawn_8.appendChild(image_black_pawn_8);
+//#endregion
+
