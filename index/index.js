@@ -128,27 +128,34 @@ function drop(ev) {
 
     if( (white_black==0 && info[0]!="black") || (white_black==1 && info[0]!="white") ){ //only permit movements on your turn
         if((info[info.length-1]-info[info.length-3]!=0 || info[info.length-2]-info[info.length-4]!=0) && is_move_valid(info)){ //infos and div that will receive the piece
-            //use info.length-x because info[2] (start colunm) may or not be present (in the case of king and queen)
-            board[ info[info.length-2] ][ info[info.length-1] ] = ev.dataTransfer.getData("text"); //new location receive the piece
-            board[ info[info.length-4] ][ info[info.length-3] ] = ""; //past location is now blank
-            if(document.getElementById(ev.target.id).parentNode!=main){ //if target is with a piece (using another way)!!!!
-                let parent=document.getElementById(ev.target.id).parentNode;
-                parent.removeChild(parent.children[0]);
-                parent.appendChild(document.getElementById(data));
+
+            if(board[ info[info.length-2] ][ info[info.length-1] ]=="white_king" || board[ info[info.length-2] ][ info[info.length-1] ]=="black_king"){
+                if(board[ info[info.length-2] ][ info[info.length-1] ]=="white_king"){window.alert("Blacks won");reset();}
+                if(board[ info[info.length-2] ][ info[info.length-1] ]=="black_king"){window.alert("Whites won");reset();}
             }
-            else{ //if target is a blank space
-                ev.target.appendChild(document.getElementById(data));
+            else{
+                //use info.length-x because info[2] (start colunm) may or not be present (in the case of king and queen)
+                board[ info[info.length-2] ][ info[info.length-1] ] = ev.dataTransfer.getData("text"); //new location receive the piece
+                board[ info[info.length-4] ][ info[info.length-3] ] = ""; //past location is now blank
+                if(document.getElementById(ev.target.id).parentNode!=main){ //if target is with a piece (using another way)!!!!
+                    let parent=document.getElementById(ev.target.id).parentNode;
+                    parent.removeChild(parent.children[0]);
+                    parent.appendChild(document.getElementById(data));
+                }
+                else{ //if target is a blank space
+                    ev.target.appendChild(document.getElementById(data));
+                }
+                if(white_black==0){white_black=1;turn.innerHTML="BLACK'S TURN";}
+                else{white_black=0;turn.innerHTML="WHITE'S TURN";}
+                
+                //add to chat
+                let new_action = document.createElement("div");
+                //if white_black now is 1, was 0, and if now is 0, was 1 (white_black==1?"Whites: ":"Blacks: ")
+                new_action.innerHTML=info[0]+": "+info[1]+" from "+letters[info[info.length-3]]+info[info.length-4]+" to "+letters[info[info.length-1]]+info[info.length-2]
+                new_action.style.backgroundColor=white_black==1?"#ffffff":"#000000";
+                new_action.style.color=white_black==1?"#000000":"#ffffff";
+                chat.appendChild(new_action);
             }
-            if(white_black==0){white_black=1;turn.innerHTML="BLACK'S TURN";}
-            else{white_black=0;turn.innerHTML="WHITE'S TURN";}
-            
-            //add to chat
-            let new_action = document.createElement("div");
-            //if white_black now is 1, was 0, and if now is 0, was 1 (white_black==1?"Whites: ":"Blacks: ")
-            new_action.innerHTML=info[0]+": "+info[1]+" from "+letters[info[info.length-3]]+info[info.length-4]+" to "+letters[info[info.length-1]]+info[info.length-2]
-            new_action.style.backgroundColor=white_black==1?"#ffffff":"#000000";
-            new_action.style.color=white_black==1?"#000000":"#ffffff";
-            chat.appendChild(new_action);
         }
     }
     
@@ -590,6 +597,18 @@ function place_pieces(){
 place_pieces();
 
 function reset(){
+
+    board = [
+        [ ["white_rook_1"],["white_knight_1"],["white_bishop_1"],["white_king"],["white_queen"],["white_bishop_2"],["white_knight_2"],["white_rook_2"] ],
+        [ ["white_pawn_1"],["white_pawn_2"],["white_pawn_3"],["white_pawn_4"],["white_pawn_5"],["white_pawn_6"],["white_pawn_7"],["white_pawn_8"] ],
+        [ [""],[""],[""],[""],[""],[""],[""],[""] ],
+        [ [""],[""],[""],[""],[""],[""],[""],[""] ],
+        [ [""],[""],[""],[""],[""],[""],[""],[""] ],
+        [ [""],[""],[""],[""],[""],[""],[""],[""] ],
+        [ ["black_pawn_1"],["black_pawn_2"],["black_pawn_3"],["black_pawn_4"],["black_pawn_5"],["black_pawn_6"],["black_pawn_7"],["black_pawn_8"] ],
+        [ ["black_rook_1"],["black_knight_1"],["black_bishop_1"],["black_king"],["black_queen"],["black_bishop_2"],["black_knight_2"],["black_rook_2"] ]
+    ];
+
     let square_list = main.children;
     console.log(square_list.length);
     for(let i=0;i<square_list.length;i++){
