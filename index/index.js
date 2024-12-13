@@ -169,7 +169,7 @@ function is_move_valid(info){
         let x_direction = info[6]-info[4];
         let y_direction = info[5]-info[3];
         if( (x_direction==0 && y_direction!=0) || (x_direction!=0 && y_direction==0) ){
-            if(board[info[5]][info[6]]=="" || info[0].charAt(0)!=board[info[3]][info[4]].toString().charAt(0)){
+            if(board[info[5]][info[6]]=="" || info[0].charAt(0)!=board[info[5]][info[6]].toString().charAt(0)){
                 let valid_way = true;
                 let distance = 0; ///always positive
                 if(x_direction==0){
